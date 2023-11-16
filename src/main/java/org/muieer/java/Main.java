@@ -1,4 +1,4 @@
-package org.muieer;
+package org.muieer.java;
 
 public class Main {
     public static void main(String[] args) {
