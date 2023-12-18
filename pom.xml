@@ -71,6 +71,32 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
+            <!--            打出的 Jar 包会包含所有依赖的 Jar 包，称作 uber/fat jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <!--                    加上该标签，manifest 中才会有附加内容-->
+                    <archive>
+                        <manifest>
+                            <mainClass>org.muieer.java.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                                                        <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

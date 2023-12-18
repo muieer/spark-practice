@@ -1,6 +1,6 @@
 package org.muieer.scala.input
 
-import org.muieer.scala.{buildLocalSparkEnv, sc, spark}
+import org.muieer.scala.buildLocalSparkEnv
 
 object ReadCSVFileExample {
 
