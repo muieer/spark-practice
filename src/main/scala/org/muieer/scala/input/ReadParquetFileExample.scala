@@ -28,7 +28,7 @@ object ReadParquetFileExample {
     // 在原表基础上添加新列
     val dataFrame2 = dataFrame.select(
       col("*"),
-      col("feature_num").-(100).as("feature_num_sub_100")
+      col("feature_num").-(100).as("feature_num_sub_100").cast("int")
     )
     dataFrame2.printSchema()
     dataFrame2.take(10).foreach(println(_))
