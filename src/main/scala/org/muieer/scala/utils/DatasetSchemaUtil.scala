@@ -12,14 +12,14 @@ object DatasetSchemaUtil {
   }
 
   def getSchemaDifference(df1: DataFrame, df2: DataFrame): Map[String, (Option[(DataType, Boolean)], Option[(DataType, Boolean)])] = {
+    val map1 = getCleanedSchema(df1)
+    val map2 = getCleanedSchema(df2)
 
-    getCleanedSchema(df1)
-    (schema1.keys ++ schema2.keys).
-      map(_.toLowerCase).
-      toList.distinct.
+    (map1.keys ++ map2.keys)
+      .toList.distinct.
       flatMap { (columnName: String) =>
-        val schema1FieldOpt: Option[(DataType, Boolean)] = schema1.get(columnName)
-        val schema2FieldOpt: Option[(DataType, Boolean)] = schema2.get(columnName)
+        val schema1FieldOpt: Option[(DataType, Boolean)] = map1.get(columnName)
+        val schema2FieldOpt: Option[(DataType, Boolean)] = map2.get(columnName)
 
         if (schema1FieldOpt == schema2FieldOpt) None
         else Some(columnName -> (schema1FieldOpt, schema2FieldOpt))
