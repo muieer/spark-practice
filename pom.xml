@@ -27,6 +27,11 @@
             <artifactId>spark-sql_2.13</artifactId>
             <version>${spark.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.linkedin.sparktfrecord</groupId>
+            <artifactId>spark-tfrecord_2.13</artifactId>
+            <version>0.6.1</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -10,7 +10,7 @@ object DataFrameComputeExample {
 
     val Tuple2(spark, _) = buildLocalSparkEnv()
 //    showAllData(spark, args)
-    run(spark, args)
+    runTemp(spark, args)
   }
 
   def showAllData(spark: SparkSession, args: Array[String]): Unit = {
@@ -18,6 +18,31 @@ object DataFrameComputeExample {
     val df = spark.read.parquet(args(0))
     df.schema
     df.sort(desc("cur_cover_rate")).collect().foreach(println(_))
+  }
+
+  def runTemp(spark: SparkSession, args: Array[String]): Unit = {
+
+    var ds: Dataset[Row] = spark.read.parquet(args.head)
+    args.tail.foreach(path => ds = ds.union(spark.read.parquet(path)))
+
+    // 过滤校验不通过样本的校验不通过特征
+    ds = ds.filter(!col("alarm") || col("pass"))
+//    println(s"@muieer, ${ds.count()}")
+
+    // 聚合
+    ds = ds.groupBy("feature_name").agg(
+      avg("cur_cover_rate").cast("double").as("history_avg_cover_rate"),
+      min("use_check_cover_rate").cast("double").as("min_history_avg_cover_rate"),
+      max("use_check_cover_rate").cast("double").as("max_history_avg_cover_rate"),
+      min("sample_num").cast("long").as("history_min_sample_num"),
+      max("sample_num").cast("long").as("history_max_sample_num")
+    )
+//    ds.printSchema()
+//    println(s"@muieer, ds.groupBy count is ${ds.count()}")
+      ds
+      .sort(asc("history_avg_cover_rate"))
+      .filter(col("history_avg_cover_rate") > 0.1)
+      .take(10).foreach(println(_))
   }
 
   def run(spark: SparkSession, args: Array[String]): Unit = {
